@@ -477,38 +477,71 @@ export default function Index() {
                 </Card>
               </>
             ) : (
-              <Card className="text-center animate-scale-in">
-                <CardHeader>
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Icon name="Trophy" size={40} className="text-primary" />
-                  </div>
-                  <CardTitle className="text-4xl mb-4">Заседание завершено!</CardTitle>
-                  <CardDescription className="text-xl">
-                    Ваш результат: <span className="font-bold text-primary text-2xl">{score}</span> из {questions.length}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="bg-muted/50 rounded-lg p-6">
-                    <h3 className="font-bold text-xl mb-3">Вердикт суда:</h3>
-                    <p className="text-lg leading-relaxed">
-                      Сила трения признаётся <span className="font-bold text-primary">необходимой</span> для существования жизни и работы механизмов. 
-                      Хотя она и создаёт проблемы в виде износа и потерь энергии, без неё невозможно движение, 
-                      торможение и удержание предметов. Задача человека — не устранить трение, 
-                      а <span className="font-bold">научиться управлять им</span> там, где это нужно!
+              <div className="space-y-6 animate-fade-in">
+                <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                  <img
+                    src={score >= 4 
+                      ? 'https://cdn.poehali.dev/projects/f5509504-d864-431b-8ddf-fbda93f2b9a2/files/7b6aab59-bfca-481f-a813-9b9dfc61a3ed.jpg'
+                      : 'https://cdn.poehali.dev/projects/f5509504-d864-431b-8ddf-fbda93f2b9a2/files/a3b9d0db-09cd-418f-b0a0-070bc31716a0.jpg'
+                    }
+                    alt="Результат суда"
+                    className="w-full h-64 md:h-96 object-cover animate-scale-in"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <h3 className="text-3xl md:text-4xl font-bold mb-2">
+                      {score >= 4 ? '⚖️ Победа!' : '⚖️ Поражение'}
+                    </h3>
+                    <p className="text-lg md:text-xl opacity-90">
+                      {score >= 4 
+                        ? 'Суд выносит решение в пользу Силы трения!'
+                        : 'Защите не удалось доказать важность трения'
+                      }
                     </p>
                   </div>
-                  <div className="flex gap-4 justify-center">
-                    <Button onClick={resetCourt} size="lg" variant="outline">
-                      <Icon name="RotateCcw" size={18} className="mr-2" />
-                      Пройти снова
-                    </Button>
-                    <Button onClick={() => setActiveSection('home')} size="lg">
-                      <Icon name="Home" size={18} className="mr-2" />
-                      На главную
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+
+                <Card className="text-center animate-scale-in">
+                  <CardHeader>
+                    <div className={`w-20 h-20 rounded-full ${score >= 4 ? 'bg-primary/10' : 'bg-destructive/10'} flex items-center justify-center mx-auto mb-4`}>
+                      <Icon name={score >= 4 ? 'Trophy' : 'Scale'} size={40} className={score >= 4 ? 'text-primary' : 'text-destructive'} />
+                    </div>
+                    <CardTitle className="text-4xl mb-4">Заседание завершено!</CardTitle>
+                    <CardDescription className="text-xl">
+                      Ваш результат: <span className={`font-bold text-2xl ${score >= 4 ? 'text-primary' : 'text-destructive'}`}>{score}</span> из {questions.length}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className={`${score >= 4 ? 'bg-primary/10 border-primary/20' : 'bg-destructive/10 border-destructive/20'} border-2 rounded-lg p-6`}>
+                      <h3 className="font-bold text-xl mb-3">Вердикт суда:</h3>
+                      {score >= 4 ? (
+                        <p className="text-lg leading-relaxed">
+                          Сила трения признаётся <span className="font-bold text-primary">необходимой</span> для существования жизни и работы механизмов. 
+                          Хотя она и создаёт проблемы в виде износа и потерь энергии, без неё невозможно движение, 
+                          торможение и удержание предметов. Задача человека — не устранить трение, 
+                          а <span className="font-bold">научиться управлять им</span> там, где это нужно!
+                        </p>
+                      ) : (
+                        <p className="text-lg leading-relaxed">
+                          К сожалению, доказательств оказалось недостаточно. Рекомендуем изучить материал глубже 
+                          и вернуться к вопросам о трении. Помните: <span className="font-bold">без трения мы не смогли бы даже ходить</span>, 
+                          держать предметы в руках или останавливать автомобили. Это одна из самых важных сил в природе!
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex gap-4 justify-center flex-wrap">
+                      <Button onClick={resetCourt} size="lg" variant="outline">
+                        <Icon name="RotateCcw" size={18} className="mr-2" />
+                        Пройти снова
+                      </Button>
+                      <Button onClick={() => setActiveSection('home')} size="lg">
+                        <Icon name="Home" size={18} className="mr-2" />
+                        На главную
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
         )}
