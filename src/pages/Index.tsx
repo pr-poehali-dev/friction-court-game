@@ -22,6 +22,15 @@ type Question = {
   explanation: string;
 };
 
+type Achievement = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  condition: (score: number, total: number) => boolean;
+  color: string;
+};
+
 const characters: Character[] = [
   {
     id: 'prosecution',
@@ -155,6 +164,41 @@ const questions: Question[] = [
   }
 ];
 
+const achievements: Achievement[] = [
+  {
+    id: 'perfect',
+    title: 'Идеальный вердикт',
+    description: 'Ответили правильно на все вопросы',
+    icon: 'Crown',
+    condition: (score, total) => score === total,
+    color: 'bg-gradient-to-br from-yellow-400 to-orange-500'
+  },
+  {
+    id: 'expert',
+    title: 'Эксперт по трению',
+    description: 'Набрали 4 балла из 5',
+    icon: 'Award',
+    condition: (score, total) => score === total - 1,
+    color: 'bg-gradient-to-br from-blue-400 to-purple-500'
+  },
+  {
+    id: 'scholar',
+    title: 'Знаток физики',
+    description: 'Набрали 3 балла из 5',
+    icon: 'BookOpen',
+    condition: (score, total) => score === 3,
+    color: 'bg-gradient-to-br from-green-400 to-teal-500'
+  },
+  {
+    id: 'student',
+    title: 'Старательный ученик',
+    description: 'Прошли игру до конца',
+    icon: 'GraduationCap',
+    condition: (score) => score >= 0,
+    color: 'bg-gradient-to-br from-gray-400 to-gray-600'
+  }
+];
+
 export default function Index() {
   const [activeSection, setActiveSection] = useState<'home' | 'characters' | 'court'>('home');
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
@@ -163,6 +207,10 @@ export default function Index() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [courtStarted, setCourtStarted] = useState(false);
+  const [showCharacterScene, setShowCharacterScene] = useState(false);
+  const [activeCharacterIndex, setActiveCharacterIndex] = useState(0);
+
+  const earnedAchievements = achievements.filter(a => a.condition(score, questions.length));
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (selectedAnswer !== null) return;
@@ -189,6 +237,8 @@ export default function Index() {
     setSelectedAnswer(null);
     setShowExplanation(false);
     setCourtStarted(false);
+    setShowCharacterScene(false);
+    setActiveCharacterIndex(0);
   };
 
   return (
@@ -476,7 +526,7 @@ export default function Index() {
                   </CardContent>
                 </Card>
               </>
-            ) : (
+            ) : !showCharacterScene ? (
               <div className="space-y-6 animate-fade-in">
                 <div className="relative overflow-hidden rounded-2xl shadow-2xl">
                   <img
@@ -500,6 +550,34 @@ export default function Index() {
                     </p>
                   </div>
                 </div>
+
+                {earnedAchievements.length > 0 && (
+                  <div className="animate-scale-in">
+                    <h3 className="text-2xl font-bold text-center mb-4">🏆 Ваши достижения</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {earnedAchievements.map((achievement, index) => (
+                        <Card 
+                          key={achievement.id} 
+                          className="overflow-hidden hover:scale-105 transition-all animate-fade-in"
+                          style={{ animationDelay: `${index * 0.1}s` }}
+                        >
+                          <div className={`h-2 ${achievement.color}`} />
+                          <CardContent className="pt-4">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-16 h-16 rounded-full ${achievement.color} flex items-center justify-center text-white shadow-lg`}>
+                                <Icon name={achievement.icon} size={32} />
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-lg">{achievement.title}</h4>
+                                <p className="text-sm text-muted-foreground">{achievement.description}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <Card className="text-center animate-scale-in">
                   <CardHeader>
@@ -529,18 +607,141 @@ export default function Index() {
                         </p>
                       )}
                     </div>
+                    <Button 
+                      onClick={() => setShowCharacterScene(true)} 
+                      size="lg" 
+                      className="w-full text-lg"
+                    >
+                      <Icon name="Play" size={20} className="mr-2" />
+                      Посмотреть финальную сцену
+                    </Button>
                     <div className="flex gap-4 justify-center flex-wrap">
                       <Button onClick={resetCourt} size="lg" variant="outline">
                         <Icon name="RotateCcw" size={18} className="mr-2" />
                         Пройти снова
                       </Button>
-                      <Button onClick={() => setActiveSection('home')} size="lg">
+                      <Button onClick={() => setActiveSection('home')} size="lg" variant="outline">
                         <Icon name="Home" size={18} className="mr-2" />
                         На главную
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
+                <Card className="text-center border-primary/30">
+                  <CardHeader>
+                    <CardTitle className="text-3xl mb-2">🎭 Финальная сцена</CardTitle>
+                    <CardDescription className="text-lg">
+                      Каждый персонаж объясняет свою важную роль
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                <div className="grid md:grid-cols-5 gap-4 mb-6">
+                  {characters.map((char, index) => (
+                    <div
+                      key={char.id}
+                      className={`flex flex-col items-center transition-all duration-500 ${
+                        index === activeCharacterIndex 
+                          ? 'scale-110 opacity-100' 
+                          : 'scale-90 opacity-40'
+                      }`}
+                    >
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-primary/50 shadow-lg">
+                        <img src={char.image} alt={char.name} className="w-full h-full object-cover" />
+                      </div>
+                      <p className="text-xs mt-2 font-semibold text-center">{char.name}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <Card className="animate-scale-in border-2 border-primary">
+                  <CardContent className="p-8">
+                    <div className="flex flex-col md:flex-row gap-6 items-start">
+                      <div className="w-full md:w-1/3">
+                        <div className="relative overflow-hidden rounded-xl shadow-xl">
+                          <img
+                            src={characters[activeCharacterIndex].image}
+                            alt={characters[activeCharacterIndex].name}
+                            className="w-full h-64 object-cover"
+                          />
+                          <Badge className={`absolute top-4 left-4 ${characters[activeCharacterIndex].color}`}>
+                            {characters[activeCharacterIndex].role}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex-1 space-y-4">
+                        <h3 className="text-3xl font-bold">{characters[activeCharacterIndex].name}</h3>
+                        <p className="text-xl italic text-muted-foreground">
+                          "{characters[activeCharacterIndex].description}"
+                        </p>
+                        <div className="space-y-3">
+                          <h4 className="font-bold text-lg">Почему это важно:</h4>
+                          {characters[activeCharacterIndex].arguments.map((arg, idx) => (
+                            <div 
+                              key={idx} 
+                              className="flex items-start gap-3 animate-fade-in bg-muted/30 p-3 rounded-lg"
+                              style={{ animationDelay: `${idx * 0.15}s` }}
+                            >
+                              <Icon name="Lightbulb" size={20} className="text-primary mt-1 flex-shrink-0" />
+                              <span className="text-base">{arg}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="flex gap-4 justify-center">
+                  <Button
+                    onClick={() => setActiveCharacterIndex(Math.max(0, activeCharacterIndex - 1))}
+                    disabled={activeCharacterIndex === 0}
+                    size="lg"
+                    variant="outline"
+                  >
+                    <Icon name="ChevronLeft" size={20} className="mr-2" />
+                    Предыдущий
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      if (activeCharacterIndex < characters.length - 1) {
+                        setActiveCharacterIndex(activeCharacterIndex + 1);
+                      }
+                    }}
+                    disabled={activeCharacterIndex === characters.length - 1}
+                    size="lg"
+                  >
+                    Следующий
+                    <Icon name="ChevronRight" size={20} className="ml-2" />
+                  </Button>
+                </div>
+
+                {activeCharacterIndex === characters.length - 1 && (
+                  <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/30 animate-scale-in">
+                    <CardContent className="p-8 text-center">
+                      <Icon name="Sparkles" size={48} className="mx-auto mb-4 text-primary" />
+                      <h3 className="text-2xl font-bold mb-4">🎓 Вывод</h3>
+                      <p className="text-lg leading-relaxed max-w-3xl mx-auto">
+                        Все эти персонажи показывают, что <span className="font-bold text-primary">трение — это не враг и не друг</span>. 
+                        Это физическое явление, которое может быть как полезным, так и вредным в зависимости от ситуации. 
+                        Понимание трения помогает нам создавать лучшие машины, безопаснее передвигаться и эффективнее использовать энергию!
+                      </p>
+                      <div className="flex gap-4 justify-center mt-6 flex-wrap">
+                        <Button onClick={resetCourt} size="lg">
+                          <Icon name="RotateCcw" size={18} className="mr-2" />
+                          Пройти игру снова
+                        </Button>
+                        <Button onClick={() => setActiveSection('home')} size="lg" variant="outline">
+                          <Icon name="Home" size={18} className="mr-2" />
+                          На главную
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </div>
