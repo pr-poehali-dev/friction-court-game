@@ -20,6 +20,7 @@ type Question = {
   options: string[];
   correctAnswer: number;
   explanation: string;
+  characterId: string;
 };
 
 type Achievement = {
@@ -101,9 +102,49 @@ const characters: Character[] = [
   }
 ];
 
-const questions: Question[] = [
+const allQuestions: Question[] = [
   {
     id: 1,
+    characterId: 'prosecution',
+    text: 'Почему трение считается вредным в механизмах?',
+    options: [
+      'Оно делает механизмы красивее',
+      'Оно изнашивает детали и превращает энергию в тепло',
+      'Оно ускоряет работу механизмов',
+      'Оно не влияет на механизмы'
+    ],
+    correctAnswer: 1,
+    explanation: 'Вредное трение действительно изнашивает детали машин и превращает полезную механическую энергию в тепло, что снижает КПД.'
+  },
+  {
+    id: 2,
+    characterId: 'prosecution',
+    text: 'Что происходит с энергией из-за трения в двигателе автомобиля?',
+    options: [
+      'Энергия увеличивается',
+      'Энергия полностью идёт на движение',
+      'Часть энергии теряется, превращаясь в тепло',
+      'Энергия преобразуется в электричество'
+    ],
+    correctAnswer: 2,
+    explanation: 'До 20-30% энергии топлива в двигателе теряется из-за трения, превращаясь в бесполезное тепло.'
+  },
+  {
+    id: 3,
+    characterId: 'prosecution',
+    text: 'Почему детали механизмов со временем изнашиваются?',
+    options: [
+      'Из-за воздуха',
+      'Из-за постоянного трения между поверхностями',
+      'Из-за гравитации',
+      'Из-за магнитного поля'
+    ],
+    correctAnswer: 1,
+    explanation: 'Постоянное трение между движущимися деталями стирает их поверхности, что приводит к износу и необходимости замены.'
+  },
+  {
+    id: 4,
+    characterId: 'defense',
     text: 'Что произойдёт, если полностью устранить трение между подошвой обуви и полом?',
     options: [
       'Ходить станет легче и приятнее',
@@ -115,19 +156,8 @@ const questions: Question[] = [
     explanation: 'Без трения между обувью и полом мы не смогли бы ходить - наши ноги скользили бы, как на льду.'
   },
   {
-    id: 2,
-    text: 'Для чего в механизмах используют подшипники?',
-    options: [
-      'Для увеличения трения',
-      'Для уменьшения трения путём замены скольжения на качение',
-      'Для украшения механизма',
-      'Для увеличения веса конструкции'
-    ],
-    correctAnswer: 1,
-    explanation: 'Подшипники заменяют трение скольжения на трение качения, которое в десятки раз меньше.'
-  },
-  {
-    id: 3,
+    id: 5,
+    characterId: 'defense',
     text: 'Почему автомобильные тормоза работают благодаря трению?',
     options: [
       'Трение тормозных колодок о диск преобразует энергию движения в тепло',
@@ -139,7 +169,60 @@ const questions: Question[] = [
     explanation: 'Тормоза используют силу трения для преобразования кинетической энергии автомобиля в тепловую, что замедляет движение.'
   },
   {
-    id: 4,
+    id: 6,
+    characterId: 'defense',
+    text: 'Как трение помогает нам держать предметы в руках?',
+    options: [
+      'Создаёт магнитное поле',
+      'Не позволяет предметам выскальзывать благодаря силе сцепления',
+      'Приклеивает предметы к рукам',
+      'Уменьшает вес предметов'
+    ],
+    correctAnswer: 1,
+    explanation: 'Трение между кожей рук и предметом создаёт силу сцепления, которая не даёт вещам выскальзывать из рук.'
+  },
+  {
+    id: 7,
+    characterId: 'bearings',
+    text: 'Для чего в механизмах используют подшипники?',
+    options: [
+      'Для увеличения трения',
+      'Для уменьшения трения путём замены скольжения на качение',
+      'Для украшения механизма',
+      'Для увеличения веса конструкции'
+    ],
+    correctAnswer: 1,
+    explanation: 'Подшипники заменяют трение скольжения на трение качения, которое в десятки раз меньше.'
+  },
+  {
+    id: 8,
+    characterId: 'bearings',
+    text: 'Во сколько раз подшипники могут уменьшить трение?',
+    options: [
+      'В 2 раза',
+      'Не уменьшают совсем',
+      'В 10-50 раз',
+      'В 100 раз'
+    ],
+    correctAnswer: 2,
+    explanation: 'Правильно подобранные подшипники могут уменьшить трение в 10-50 раз по сравнению с обычным скольжением.'
+  },
+  {
+    id: 9,
+    characterId: 'bearings',
+    text: 'Где используются подшипники?',
+    options: [
+      'Только в космических кораблях',
+      'Только в часах',
+      'В колёсах, моторах, турбинах и множестве других механизмов',
+      'Только в велосипедах'
+    ],
+    correctAnswer: 2,
+    explanation: 'Подшипники используются везде, где нужно вращение: в автомобилях, станках, бытовой технике, велосипедах и даже в жёстких дисках компьютеров.'
+  },
+  {
+    id: 10,
+    characterId: 'lubricant',
     text: 'Какую роль играет смазка в механизмах?',
     options: [
       'Увеличивает трение между деталями',
@@ -151,7 +234,34 @@ const questions: Question[] = [
     explanation: 'Смазка создаёт тонкую плёнку между деталями, снижая трение, износ и нагрев механизма.'
   },
   {
-    id: 5,
+    id: 11,
+    characterId: 'lubricant',
+    text: 'Что произойдёт с двигателем автомобиля без масла?',
+    options: [
+      'Будет работать быстрее',
+      'Перегреется и заклинит из-за сильного трения',
+      'Ничего не изменится',
+      'Станет экономичнее'
+    ],
+    correctAnswer: 1,
+    explanation: 'Без масла детали двигателя будут тереться друг о друга напрямую, что вызовет перегрев, износ и быстрое разрушение.'
+  },
+  {
+    id: 12,
+    characterId: 'lubricant',
+    text: 'Как смазка защищает металлические детали?',
+    options: [
+      'Делает их невидимыми',
+      'Создаёт защитную плёнку, предотвращая коррозию и износ',
+      'Превращает их в пластик',
+      'Увеличивает их вес'
+    ],
+    correctAnswer: 1,
+    explanation: 'Смазка создаёт защитную плёнку на поверхности металла, которая предотвращает ржавчину и уменьшает прямой контакт деталей.'
+  },
+  {
+    id: 13,
+    characterId: 'treads',
     text: 'Почему протектор на шинах увеличивает трение с дорогой?',
     options: [
       'Протектор делает шину красивее',
@@ -161,6 +271,32 @@ const questions: Question[] = [
     ],
     correctAnswer: 1,
     explanation: 'Рельефный протектор увеличивает площадь контакта и улучшает сцепление с дорожным покрытием, особенно на мокрой или скользкой дороге.'
+  },
+  {
+    id: 14,
+    characterId: 'treads',
+    text: 'Что будет, если ездить на автомобиле с лысыми (стёртыми) шинами?',
+    options: [
+      'Автомобиль поедет быстрее',
+      'Ухудшится сцепление с дорогой, особенно на мокром покрытии',
+      'Ничего не изменится',
+      'Снизится расход топлива'
+    ],
+    correctAnswer: 1,
+    explanation: 'Стёртый протектор резко ухудшает сцепление с дорогой, особенно на мокрой или обледенелой поверхности, что крайне опасно.'
+  },
+  {
+    id: 15,
+    characterId: 'treads',
+    text: 'Почему зимние шины имеют более глубокий протектор?',
+    options: [
+      'Для красоты',
+      'Чтобы улучшить сцепление на снегу и льду',
+      'Чтобы увеличить вес автомобиля',
+      'Чтобы снизить расход топлива'
+    ],
+    correctAnswer: 1,
+    explanation: 'Глубокий протектор зимних шин помогает шине "вгрызаться" в снег и лёд, значительно улучшая сцепление в сложных условиях.'
   }
 ];
 
@@ -209,6 +345,27 @@ export default function Index() {
   const [courtStarted, setCourtStarted] = useState(false);
   const [showCharacterScene, setShowCharacterScene] = useState(false);
   const [activeCharacterIndex, setActiveCharacterIndex] = useState(0);
+  const [questions, setQuestions] = useState<Question[]>([]);
+
+  const selectRandomQuestions = () => {
+    const questionsByCharacter: { [key: string]: Question[] } = {};
+    
+    allQuestions.forEach(q => {
+      if (!questionsByCharacter[q.characterId]) {
+        questionsByCharacter[q.characterId] = [];
+      }
+      questionsByCharacter[q.characterId].push(q);
+    });
+
+    const selected: Question[] = [];
+    Object.keys(questionsByCharacter).forEach(charId => {
+      const charQuestions = questionsByCharacter[charId];
+      const randomQuestion = charQuestions[Math.floor(Math.random() * charQuestions.length)];
+      selected.push(randomQuestion);
+    });
+
+    return selected.sort(() => Math.random() - 0.5);
+  };
 
   const earnedAchievements = achievements.filter(a => a.condition(score, questions.length));
 
@@ -239,6 +396,12 @@ export default function Index() {
     setCourtStarted(false);
     setShowCharacterScene(false);
     setActiveCharacterIndex(0);
+    setQuestions(selectRandomQuestions());
+  };
+
+  const startCourt = () => {
+    setQuestions(selectRandomQuestions());
+    setCourtStarted(true);
   };
 
   return (
@@ -436,14 +599,15 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-4xl mb-4">Судебное заседание</CardTitle>
                   <CardDescription className="text-lg">
-                    Вам предстоит ответить на {questions.length} вопросов о силе трения.
+                    Вам предстоит ответить на 5 вопросов о силе трения.
+                    Каждый вопрос связан с одним из персонажей.
                     За каждый правильный ответ вы получите балл.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button
                     size="lg"
-                    onClick={() => setCourtStarted(true)}
+                    onClick={startCourt}
                     className="text-lg px-8 py-6"
                   >
                     Начать заседание
@@ -452,14 +616,28 @@ export default function Index() {
               </Card>
             ) : currentQuestion < questions.length ? (
               <>
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                   <Badge variant="outline" className="text-lg px-4 py-2">
                     Вопрос {currentQuestion + 1} из {questions.length}
                   </Badge>
-                  <Badge className="text-lg px-4 py-2 bg-primary">
-                    <Icon name="Award" size={18} className="mr-2" />
-                    Счёт: {score}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 bg-muted/50 px-3 py-2 rounded-lg">
+                      <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/50">
+                        <img 
+                          src={characters.find(c => c.id === questions[currentQuestion]?.characterId)?.image} 
+                          alt="Персонаж"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-sm font-semibold">
+                        {characters.find(c => c.id === questions[currentQuestion]?.characterId)?.name}
+                      </span>
+                    </div>
+                    <Badge className="text-lg px-4 py-2 bg-primary">
+                      <Icon name="Award" size={18} className="mr-2" />
+                      Счёт: {score}
+                    </Badge>
+                  </div>
                 </div>
 
                 <Card>
